@@ -1,26 +1,111 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============ DESIGN TOKENS: change the look of the whole store here ============ */
+@theme {
+  --color-paper: #ffffff;   /* page background */
+  --color-soft: #f8fafc;    /* light grey sections (bag, login, account) */
+  --color-panel: #ffffff;   /* cards, inputs */
+  --color-wash: #f1f5f9;    /* image placeholders, soft areas */
+  --color-ink: #0f172a;     /* text and dark buttons */
+  --color-muted: #64748b;   /* secondary text */
+  --color-line: #e5e7eb;    /* borders */
+  --color-brand: #2563eb;   /* links, focus, highlights */
+  --color-tag: #f59e0b;     /* the "one of a kind" tag colour */
+  --color-tagsoft: #fef3c7;
+  --color-ok: #15803d;
+  --color-oksoft: #dcfce7;
+  --color-bad: #dc2626;
+  --color-badsoft: #fee2e2;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
   }
+  a { color: inherit; text-decoration: none; }
+  button, input, select, textarea { font: inherit; }
+  button { cursor: pointer; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+
+  /* buttons */
+  .btn { @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-6 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-dark { @apply bg-ink text-white hover:bg-ink/85; }
+  .btn-brand { @apply bg-gradient-to-r from-brand to-indigo-600 text-white shadow-lg shadow-brand/25 hover:brightness-110; }
+  .btn-line { @apply border border-line bg-panel text-ink hover:border-ink; }
+  .btn-danger { @apply border border-bad/30 bg-badsoft text-bad hover:border-bad; }
+  .btn-ok { @apply bg-ok text-white hover:bg-ok/90; }
+  .btn-sm { @apply h-9 px-4 text-xs; }
+  .btn-block { @apply w-full; }
+
+  .btn-lg { @apply h-12 px-8 text-base; }
+  .eyebrow { @apply inline-flex items-center gap-2 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand; }
+  .gradient-text { @apply bg-gradient-to-r from-brand to-indigo-600 bg-clip-text text-transparent; }
+  .card-hover { @apply transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink/10; }
+  .bg-aurora {
+    background:
+      radial-gradient(55% 80% at 8% 8%, rgb(37 99 235 / 0.16), transparent 62%),
+      radial-gradient(45% 70% at 95% 15%, rgb(245 158 11 / 0.22), transparent 62%),
+      radial-gradient(60% 80% at 55% 105%, rgb(124 58 237 / 0.13), transparent 62%),
+      #ffffff;
+  }
+
+  /* forms */
+  .label { @apply mb-1.5 block text-sm font-medium; }
+  .hint { @apply mt-1.5 text-xs text-muted; }
+  .input { @apply h-11 w-full rounded-lg border border-line bg-panel px-4 text-sm outline-none transition placeholder:text-muted/70 focus:border-ink focus:ring-4 focus:ring-brand/10; }
+  textarea.input { @apply h-auto min-h-28 py-3; }
+  select.input { @apply appearance-none bg-no-repeat pr-10; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23667085' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-position: right 14px center; }
+
+  /* surfaces */
+  .card { @apply rounded-xl border border-line bg-panel; }
+  .card-pad { @apply p-5 sm:p-6; }
+
+  /* status chips */
+  .chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap; }
+  .chip-ok { @apply bg-oksoft text-ok; }
+  .chip-warn { @apply bg-tagsoft text-[#92400e]; }
+  .chip-bad { @apply bg-badsoft text-bad; }
+  .chip-info { @apply bg-brand/10 text-brand; }
+  .chip-mute { @apply bg-wash text-muted; }
+
+  /* tables (admin) */
+  .tbl { @apply w-full text-left text-sm; }
+  .tbl th { @apply whitespace-nowrap border-b border-line px-4 py-3 text-xs font-medium text-muted; }
+  .tbl td { @apply border-b border-line px-4 py-3.5 align-middle; }
+  .tbl tr:last-child td { @apply border-b-0; }
+
+  /* type */
+  .display { @apply font-display font-bold tracking-tight; }
+  .page-title { @apply font-display text-2xl font-bold tracking-tight sm:text-3xl; }
 }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee { animation: marquee 32s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+.marquee:hover { animation-play-state: paused; }
